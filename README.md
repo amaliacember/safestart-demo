@@ -1,125 +1,147 @@
-# SafeStart caseworker demo
+# SafeStart demo
 
 A clickable prototype for the Thomas More course "The Digital Startup" (team DreamTeam).
 
 SafeStart is a service idea for CAW: people leaving a controlling relationship
 get a stalkerware scan, a clean phone with new accounts, help moving their data,
-and an evidence vault. This demo only shows the **caseworker's side**.
+and an evidence vault. The demo shows SafeStart to the **professionals** around
+it, in five modules, one per team member:
 
-During a video call, a caseworker opens a link, handles three made-up cases, and
-the app measures how long each case takes and whether they reach the right route.
-The interviewer asks follow-up questions out loud. It tests one hypothesis:
-*caseworkers will use the SafeStart check in most suspected cases of digital control*
-(success: at least 4 of 5 caseworkers finish all 3 cases without help in under 10 minutes).
+| # | Module | Link | Status |
+|---|---|---|---|
+| 1 | Caseworker check | `/m/caseworker` | done |
+| 2 | Phone handover and data transfer | `/m/handover` | coming soon |
+| 3 | Evidence vault | `/m/vault` | coming soon |
+| 4 | Organisation side | `/m/organisation` | coming soon |
+| 5 | Phone donor and refurb partner | `/m/donor` | coming soon |
 
-**Everything is fake.** There is no real scan, no real order and no real person.
-Nothing is stored for the team: the results live only in the participant's own
-session until they copy or download them and close the session.
+During a video call, a participant opens a module, does a few made-up tasks,
+and the app times each task, counts back clicks and records the outcome. The
+interviewer asks the questions out loud. At the end the participant copies the
+results into the call chat (or downloads them) and closes the session.
 
-## What a session looks like
+**Everything is fake.** There is no real scan, no real order and no real
+person. Nothing is stored for the team: the results live only in the
+participant's own session until they copy or download them and close it.
 
-1. **Intro:** language (Dutch or English), a short explanation, and the session
-   code the interviewer gives (for example `C3`). That code is the only identifier.
-2. **Three cases** (Sara, Lena, Tom), each with these steps:
-   1. New case: a case number (pre-filled `DEMO-0417`).
-   2. Quick check: six yes / no / don't know questions.
-   3. Route: which route(s) apply, with one line why.
-   4. Scan: only when the scan route applies. A fake progress bar, then a scripted result.
-   5. Advice: new phone package advised or not.
-   6. Order: only when the package is advised. Nothing is ordered.
-3. **Results:** time per case (with and without the scan's waiting time),
-   whether the route was **exact**, had an **extra** route (for example a cautious
-   scan) or **missed** one, back clicks, and totals. The participant copies the
-   text into the call chat or downloads `safestart-demo-<code>.json`, then
-   closes the session, which erases everything.
+The team plan, module briefs and rules are in [`docs/TEAM.md`](docs/TEAM.md).
 
-## Run it locally in Herd
+## Run it on your laptop
+
+You need PHP 8.4 or newer, Composer, and Node 22. Laravel Herd gives you all
+three, but any PHP setup from other courses works too.
 
 ```bash
 composer install
 npm install
-cp .env.example .env
+cp .env.example .env          # Windows PowerShell: copy .env.example .env
 php artisan key:generate
 npm run build
 ```
 
-For development, set `APP_ENV=local` and `APP_DEBUG=true` in `.env`, and use
-`npm run dev` while you work on the look. Open http://safestart-demo.test.
+Then open the site in one of two ways.
 
-## Sharing a session with `herd share`
+**With Herd:** put the project in your Herd sites folder and open
+`http://<folder-name>.test` (for example `http://safestart-demo.test`).
 
-Do these steps before **every** session, in this order.
-
-1. **Run the preflight check.**
-
-   ```bash
-   php artisan config:clear
-   php artisan demo:preflight
-   ```
-
-   It checks that debug is off, the app runs in production mode, the Vite dev
-   server is stopped, the assets are built, the session is encrypted and only
-   sent over HTTPS, the rest of the `.env` security settings, and that Herd
-   Studio does not inject anything into the page. Every failed check says what
-   to change. Fix it and run the check again until it says
-   **All checks passed**. Do not share before that.
-
-   The usual fixes:
-   - Stop `npm run dev` (Ctrl+C) and run `npm run build`.
-   - Put the sharing values from `.env.example` in your `.env` (keep your own
-     `APP_KEY`), then `php artisan config:clear`.
-   - Turn Herd Studio off (see below).
-
-2. **Start sharing:** `herd share`. Give the participant the HTTPS link it shows.
-   The link never contains the session code: the interviewer says the code out loud.
-   The first time, Expose asks for a token: see "Expose token" below.
-
-3. **After the session:** stop sharing with Ctrl+C in the `herd share` window.
-   For development, set `APP_ENV=local` and `APP_DEBUG=true` again.
-
-### Expose token (once)
-
-`herd share` uses Expose. Make a free account at https://expose.dev, copy your
-token from https://expose.dev/dashboard, and run in PowerShell:
-
-```powershell
-& "$env:USERPROFILE\.config\herd\bin\expose.exe" token YOUR_TOKEN
-```
-
-Run it in your own terminal, so the token does not end up in a chat or log.
-
-### Turning Herd Studio off
-
-Herd Studio is a Herd developer tool. When it is on, Herd's own web server adds
-a script (`/herd-studio/loader.js`) and an "Edit with Herd" button to every page,
-including pages viewed through `herd share`. That breaks our "no extra scripts"
-rule, so it must be off during a session.
-
-- **For the whole of Herd:** open Herd → **Settings** → **Herd Studio** → turn
-  off **Enable Herd Studio**.
-- **For this site only:** open Herd → **Sites** → select **safestart-demo** →
-  in the panel on the right, under Studio, turn off **Show the Herd Studio badge**.
-
-Check that it worked (no output means it is off):
+**Without Herd:**
 
 ```bash
-curl -s http://safestart-demo.test/ | grep herd-studio
+php artisan serve
 ```
 
-`php artisan demo:preflight` runs the same check.
+and open http://127.0.0.1:8000. Leave that window open while you work; stop it
+with Ctrl+C.
 
-## Changing questions, scenarios, prices or text
+You should see the start page with module 1 as a link and the other modules
+as "coming soon". `.env.example` already has the right local settings: no
+database, file sessions, debug on.
+
+### While you work on the look
+
+Run `npm run dev` in a second window. Styles and scripts then reload as you
+save. Stop it with Ctrl+C and run `npm run build` again when you are done,
+otherwise the site keeps asking the stopped dev server for its files.
+
+## Working together with Git
+
+- `main` always works. Nobody pushes to it directly.
+- Each person works on their own branch: `git checkout -b module-<nr>-<name>`
+  (for example `module-2-handover`). Commit often.
+- Change only your own module files (list below). For a shared file, tell the
+  group first; Amalia merges those.
+- When your module works and `php artisan test` is green: push your branch and
+  open a **pull request** to `main`. GitHub runs the tests on it automatically
+  (the "tests" check). One other member clicks through it and checks the rules
+  in `docs/TEAM.md`, then it is merged.
+- After a merge, everyone updates: `git checkout main`, `git pull`, then
+  `composer install`, `npm install`, `npm run build`.
+
+## Making your module
+
+The **template module** is a small, complete example: a shared intro, two
+screens, a timed task, and the shared results at the end. Open it at
+`/m/template`. Copy it in six steps (replace `handover` / `PhoneHandover`
+with your own module):
+
+1. **Find your key and class name** in `config/safestart/modules.php`. Module 2
+   is `handover` with class `PhoneHandover`. You do not edit this file, and
+   you never add a route: `/m/handover` switches from "coming soon" to your
+   module as soon as your class exists.
+2. **Copy the files** and rename "template" / "Template" in them:
+
+   | Copy | To |
+   |---|---|
+   | `app/Livewire/Modules/Template.php` | `app/Livewire/Modules/PhoneHandover.php` |
+   | `config/safestart/template.php` | `config/safestart/handover.php` |
+   | `lang/nl/template.php`, `lang/en/template.php` | `lang/nl/handover.php`, `lang/en/handover.php` |
+   | `resources/views/modules/template/` | `resources/views/modules/handover/` |
+   | `tests/Feature/Modules/TemplateTest.php` | `tests/Feature/Modules/PhoneHandoverTest.php` |
+   | `e2e/template.spec.ts` | `e2e/handover.spec.ts` |
+
+3. **Data first:** your made-up case, options and prices go in your config file.
+4. **Text next:** every word on your screens goes in your two lang files,
+   Dutch and English with the same keys. The module title on the start page is
+   already in `lang/*/demo.php`.
+5. **Screens:** one Blade file per screen, plus `page.blade.php` around them.
+   Use the shared components (`<x-module-sheet>`, `<x-step-indicator>`,
+   `<x-actions>`, `<x-tri-choice>`) so it looks like the rest. In your class,
+   write one public method per button. When the participant is done, call
+   `$this->finish()`.
+6. **Tests:** make your feature test run the module start to finish, and your
+   Playwright spec click through it. `php artisan test` green, then open the
+   pull request.
+
+What a module class tells the shared parts:
+
+| Method | What it is for |
+|---|---|
+| `key()` | your key, e.g. `'handover'` |
+| `tasks()` | the timed tasks, in order; each becomes a row in the results |
+| `outcomes()` | the outcomes a task can end with, coloured good / warn / bad |
+| `targetMinutes()` | optional time target shown in the results |
+| `waits()` | `true` if you have a fake waiting bar to leave out of the time |
+| `remember()` | properties to keep when the page reloads |
+| `afterIntro()` | what happens after the participant presses Start |
+| `renderScreen()` | which view to show |
+
+And the helpers it can use: `startTask()`, `enterScreen()`, `countBack()`,
+`waitStarted()` / `waitEnded()`, `record()` (details for the download),
+`setOutcome()`, `finishTask()` and `finish()`. `Template.php` uses most of
+them; `CaseworkerCheck.php` uses all of them.
+
+## Changing module 1 (caseworker check)
 
 You never need to touch PHP logic for these.
 
 | What | Where |
 |---|---|
-| Question **text**, button labels, all other text | `lang/nl/demo.php` and `lang/en/demo.php` (same keys in both) |
-| The **list** of questions | `config/safestart.php` → `questions` |
-| Routing rules ("which answers lead to a scan?") | `config/safestart.php` → `rules` and `package` (the format is explained in the file) |
-| The three scenarios: story, expected route, scripted scan result | Story text in `lang/*/demo.php` → `scenarios`; the rest in `config/safestart.php` → `scenarios` |
-| Prices and delivery time | `config/safestart.php` → `pricing` |
-| Scan animation length, 10-minute target | `config/safestart.php` → `timing` |
+| Question **text**, button labels, all other text | `lang/nl/caseworker.php` and `lang/en/caseworker.php` |
+| The **list** of questions | `config/safestart/caseworker.php` → `questions` |
+| Routing rules ("which answers lead to a scan?") | `config/safestart/caseworker.php` → `rules` and `package` (the format is explained in the file) |
+| The three scenarios: story, expected route, scripted scan result | Story text in `lang/*/caseworker.php` → `scenarios`; the rest in `config/safestart/caseworker.php` → `scenarios` |
+| Prices and delivery time | `config/safestart/caseworker.php` → `pricing` |
+| Scan animation length, 10-minute target | `config/safestart/caseworker.php` → `timing` |
 
 After a change, run `php artisan test`: the tests check every rule and every scenario.
 
@@ -127,106 +149,182 @@ After a change, run `php artisan test`: the tests check every rule and every sce
 
 ### The short version
 
-It is a normal Laravel app with **one page** (`/`). That page is a **Livewire
-component**. If you have not used Livewire: think of it as a Blade view with a
-PHP class behind it.
+It is a normal Laravel app. Each screen is a **Livewire component**. If you
+have not used Livewire: think of it as a Blade view with a PHP class behind it.
 
-- The class (`app/Livewire/CaseDemo.php`) holds the state of the page in public
-  properties, for example `$screen = 'check'` and `$answers`.
-- The view (`resources/views/livewire/case-demo.blade.php`) shows the screen
-  that `$screen` points at.
-- A button like `<button wire:click="submitCheck">` means: when clicked, the
-  browser sends a small request, Laravel runs `submitCheck()` on the class, the
-  view is rendered again, and only the changed HTML is swapped in. No page
-  reload, and no JavaScript to write.
+- The class (for example `app/Livewire/Modules/Template.php`) holds the state
+  of the page in public properties, for example `$screen = 'task'` and `$choice`.
+- The view shows the screen that `$screen` points at.
+- A button like `<button wire:click="next">` means: when clicked, the browser
+  sends a small request, Laravel runs `next()` on the class, the view is
+  rendered again, and only the changed HTML is swapped in. No page reload,
+  and no JavaScript to write.
+- A field like `<input wire:model="choice">` sends what the participant typed
+  or picked into `$choice`. Anything that comes from the browser is checked
+  with `$this->validate(...)` before it is used.
+
+Every module class **extends `Module`** (`app/Livewire/Modules/Module.php`).
+That base class shows the shared intro (language and session code), keeps the
+module's state in the session so a reload continues where the participant
+was, and writes times, back clicks and outcomes to the shared `SessionLog`.
 
 ```
- browser                         Laravel
- ───────                         ───────
- click "Show the route"  ──────► CaseDemo::submitCheck()
-                                   ├─ validate the 6 answers
-                                   ├─ Triage: answers → routes
-                                   ├─ SessionLog: save answers, routes, outcome, time
-                                   └─ $screen = 'route'
- new HTML swapped in     ◄────── render case-demo.blade.php → screens/route.blade.php
+ browser                               Laravel
+ ───────                               ───────
+ /m/template                ─────────► Template (extends Module)
+                                         └─ $screen = 'intro' → shared intro
+ click "Start"              ─────────► Module::start()
+                                         ├─ check the session code
+                                         ├─ SessionLog: begin (or keep the code of an earlier module)
+                                         └─ Template::afterIntro(): start the task, show 'task'
+ click "Next"               ─────────► Template::next()
+                                         ├─ validate the choice
+                                         ├─ SessionLog: record details + outcome
+                                         └─ show 'confirm'
+ click "Finish the module"  ─────────► Template::finishModule()
+                                         ├─ SessionLog: stop the task's timer
+                                         └─ finish(): go to /results
+ /results                   ─────────► Results: every module done in this session,
+                                         copy text, download, close
 ```
 
 ### The files that matter
 
 ```
 app/
-  Livewire/CaseDemo.php          The whole flow: one method per button, and which screen comes next.
-  Support/Triage.php             Answers -> routes and package advice. Plain PHP, rules come from config.
-  Support/ScanSimulator.php      Returns the scripted scan result for a scenario. No randomness.
-  Support/SessionLog.php         Records times, back clicks and outcomes; builds the results summary.
-  Support/ResultsText.php        The plain-text results for the "Copy" button.
+  Livewire/StartPage.php           The start page: language and the five modules.
+  Livewire/Modules/Module.php      Base class of every module: intro, saved state, timing helpers, finish().
+  Livewire/Modules/Template.php    The example module to copy.
+  Livewire/Modules/CaseworkerCheck.php   Module 1: one method per button, and which screen comes next.
+  Livewire/Results.php             The shared results screen.
+  Livewire/ComingSoon.php          /m/<key> for a module that is not merged yet.
+  Support/SessionLog.php           Records times, back clicks and outcomes per module and task; builds the summary.
+  Support/Modules.php              Reads config/safestart/modules.php; a module is live once its class exists.
+  Support/ResultsText.php          The plain-text results for the "Copy" button.
+  Support/Caseworker/              Module 1's routing rules (Triage) and scripted scan (ScanSimulator).
   Http/Controllers/ResultsDownloadController.php   GET /results/download -> the JSON file.
   Http/Middleware/SecurityHeaders.php              Strict browser security headers on every page.
   Http/Middleware/SetLocale.php                    Applies the chosen language from the session.
-  Console/Commands/DemoPreflight.php               php artisan demo:preflight
-config/safestart.php             Questions, rules, scenarios, prices, timing.
-lang/nl/demo.php, lang/en/demo.php   All text.
+  Console/Commands/DemoPreflight.php               php artisan demo:preflight (see "Settings for sharing").
+config/safestart/                  demo.php and modules.php (shared), one file per module.
+lang/nl/, lang/en/                 demo.php (shared text), one file per module.
 resources/views/
-  layouts/app.blade.php          The HTML page around everything (banner, fonts, scripts).
-  livewire/case-demo.blade.php   The frame: step indicator, case-file sheet, current screen.
-  screens/*.blade.php            One file per screen (intro, scenario, check, route, scan, ...).
-  components/*.blade.php         Banner, step indicator, the yes/no/don't-know control, action bar.
-resources/css/app.css            Tailwind and our colour and font tokens.
-resources/js/app.js              The two small browser bits: scan progress bar and copy button.
-routes/web.php                   The only two routes: / and /results/download.
+  layouts/app.blade.php            The HTML page around everything (banner, fonts, scripts).
+  components/                      Banner, step indicator, module sheet, action bar, yes/no/don't-know, language toggle.
+  livewire/                        Start page, coming soon, results.
+  modules/intro.blade.php          The shared intro.
+  modules/<module>/                One folder per module: page.blade.php plus one file per screen.
+resources/css/app.css              Tailwind and our colour and font tokens.
+resources/js/app.js                The small browser bits: scan progress bar, copy button, focus after a screen change.
+routes/web.php                     /, /m/<key> for every module, /results, /results/download.
 ```
 
 ### Where the data lives (and does not)
 
-- Everything about a run is kept in the participant's **Laravel session**
-  (`safestart.state` for the screen they are on, `safestart.log` for the
-  results). Sessions are encrypted files on the laptop running Herd.
-- A page reload continues where the participant was.
+- Everything about a run is kept in the participant's **Laravel session**:
+  `safestart.log` for the results of every module, `safestart.modules.<key>`
+  for the screen each module is on. Sessions are encrypted files on the laptop
+  running the site.
+- A page reload continues where the participant was. Doing a second module in
+  the same call keeps the session code, and the results show both modules.
 - **Close** on the results screen wipes the session. Nothing is written to a
   database (there is none), a log file or anywhere else.
 - Times come from the server clock, never from the participant's browser.
 - The only identifier is the session code. Names are never asked for; the
-  session code and case number only accept letters, digits and dashes.
+  session code only accepts letters, digits and dashes.
 
 ### Security in short
 
 - Strict Content-Security-Policy with a fresh random nonce per page: only our
   own scripts, styles and fonts can load. Livewire runs in its CSP-safe mode,
-  so no `unsafe-eval` is needed.
+  so no `unsafe-eval` is needed. Inline `style=""` attributes and inline
+  scripts are blocked too, so don't use them.
 - No CDN, no web fonts from elsewhere, no analytics: fonts are bundled from
   `@fontsource` packages.
-- Cookies are encrypted, HTTPS-only, HttpOnly and SameSite=strict when sharing.
-- Rate limit: 120 requests per minute per session, 600 per minute per IP
-  (everyone behind the tunnel shares one IP).
-- Proxy headers are trusted only from the tunnel on this machine, and only for
-  protocol, host and port. A visitor cannot fake their IP address.
+- Every route and every Livewire click is rate limited: 120 requests per minute
+  per session, 600 per minute per IP.
+- Every route that exists is in `routes/web.php`; there is no welcome page,
+  no `/up` and no file storage route.
+- `composer audit` and `npm audit` must stay at 0 vulnerabilities. Ask the
+  group before adding any package.
 
 ## Tests
 
 ```bash
-php artisan test        # Pest: unit and Livewire feature tests
-npm run test:e2e        # Playwright: all 3 cases, NL + EN, 390 px + 1280 px
+php artisan test        # Pest: unit and Livewire feature tests (also runs on GitHub)
+npm run test:e2e        # Playwright: every module, NL + EN, 390 px + 1280 px
 ```
 
-- `tests/Unit`: every routing rule, every scenario, the session log maths.
-- `tests/Feature`: the full flow through the component, security headers, rate
-  limit, the download, and the preflight command.
-- `e2e/flow.spec.ts`: clicks through all cases in a real browser, checks the
-  download and copy text against what happened, fails on any security policy
-  error, and saves a screenshot of every screen to `docs/screenshots`
-  (used in the report). For another address: `DEMO_URL=https://... npm run test:e2e`.
+- `tests/Unit`: the session log maths, and module 1's routing rules and scenarios.
+- `tests/Feature`: the start page, the shared results and download, security
+  headers, rate limit, the preflight command, and each module start to finish
+  (`tests/Feature/Modules`).
+- `e2e/*.spec.ts`: clicks through every module in a real browser, fails on any
+  security policy error, and saves a screenshot of every screen to
+  `docs/screenshots/<module>/` (used in the report).
+
+Playwright needs the site running and a browser installed once
+(`npx playwright install chromium`). By default it uses
+`http://safestart-demo.test`. With `php artisan serve` running:
+
+```bash
+DEMO_URL=http://127.0.0.1:8000 npm run test:e2e                      # Git Bash / macOS
+$env:DEMO_URL="http://127.0.0.1:8000"; npm run test:e2e              # Windows PowerShell
+npm run test:e2e -- e2e/template.spec.ts                             # one module only
+```
+
+GitHub Actions (`.github/workflows/tests.yml`) runs `php artisan test` on
+every pull request and every push to `main`. It deploys nothing.
+
+## Settings for sharing (later)
+
+There is no hosting yet: everyone runs the demo on their own laptop. If the
+demo is ever opened by someone else through a link (a tunnel or a server),
+use these values in `.env` instead of the local ones:
+
+```
+APP_ENV=production
+APP_DEBUG=false
+LOG_LEVEL=warning
+SESSION_DRIVER=file
+SESSION_ENCRYPT=true
+SESSION_SECURE_COOKIE=true
+SESSION_HTTP_ONLY=true
+SESSION_SAME_SITE=strict
+CACHE_STORE=file
+QUEUE_CONNECTION=sync
+```
+
+Then run `php artisan config:clear`, stop `npm run dev`, run `npm run build`,
+and check everything with:
+
+```bash
+php artisan demo:preflight
+```
+
+It fails, with what to change, if debug is on, the app is not in production
+mode, the Vite dev server is running, the assets are not built, the session
+is not encrypted or not HTTPS-only, or another of the settings above is off.
+It also checks that Herd Studio does not inject anything into the page.
+
+**Herd Studio** is a Herd developer tool that adds its own script and an
+"Edit with Herd" button to every page Herd serves. It must be off when anyone
+else sees the site: Herd → **Settings** → **Herd Studio** → turn off
+**Enable Herd Studio** (or per site: Herd → **Sites** → select the site →
+turn off **Show the Herd Studio badge**). `php artisan serve` never has it.
 
 ## Known limits
 
-- Livewire registers a few routes of its own besides our two (its update
+- Livewire registers a few routes of its own besides ours (its update
   endpoint, its script file, and file upload/preview endpoints). The upload
   and preview endpoints reject every request without a signed URL, and this
   app never creates one. The update endpoint has the same rate limit as ours.
-- "Copy results" uses the clipboard API on HTTPS (as through `herd share`). On
-  plain `http://safestart-demo.test` it falls back to selecting the text.
+- "Copy results" uses the clipboard API on HTTPS. On plain `http://` (your
+  laptop) it falls back to selecting the text and the older copy command.
 
 ## Dutch text
 
-All Dutch text is in `lang/nl/demo.php`. **It still needs a check by a
-Dutch-speaking (Flemish) teammate**, especially the three scenario stories and
-the six questions.
+All Dutch text is in `lang/nl/`. **It still needs a check by a Dutch-speaking
+(Flemish) teammate**, especially module 1's three scenario stories and six
+questions, the module titles on the start page (`lang/nl/demo.php`), and the
+template module.
