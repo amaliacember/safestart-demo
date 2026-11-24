@@ -4,19 +4,20 @@ use Tests\TestCase;
 
 /*
 | Feature tests boot the Laravel app. Unit tests stay plain PHP: they load
-| config/safestart.php directly with safestartConfig(), so they test the real
-| rules without starting the framework.
+| a module's config file directly (caseworkerConfig()), so they test the
+| real rules without starting the framework.
 */
 
 pest()->extend(TestCase::class)->in('Feature');
 
-function safestartConfig(): array
+/** config/safestart/caseworker.php, loaded without the framework. */
+function caseworkerConfig(): array
 {
-    return require __DIR__.'/../config/safestart.php';
+    return require __DIR__.'/../config/safestart/caseworker.php';
 }
 
 /**
- * Builds a full answer set: everything "no" unless overridden.
+ * Module 1: builds a full answer set: everything "no" unless overridden.
  * Example: answers(q2: 'yes', q4: 'unknown')
  */
 function answers(string ...$overrides): array
