@@ -80,11 +80,13 @@ Do these steps before **every** session, in this order.
 ### Expose token (once)
 
 `herd share` uses Expose. Make a free account at https://expose.dev, copy your
-token from https://expose.dev/dashboard, and run:
+token from https://expose.dev/dashboard, and run in PowerShell:
 
-```bash
-"%USERPROFILE%\.config\herd\bin\expose.exe" token YOUR_TOKEN
+```powershell
+& "$env:USERPROFILE\.config\herd\bin\expose.exe" token YOUR_TOKEN
 ```
+
+Run it in your own terminal, so the token does not end up in a chat or log.
 
 ### Turning Herd Studio off
 
