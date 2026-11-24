@@ -13,6 +13,9 @@ export default defineConfig({
         tailwindcss(),
     ],
     server: {
+        // An IPv4 address on purpose: the Content-Security-Policy cannot list
+        // IPv6 addresses like [::1], so the dev server would be blocked.
+        host: '127.0.0.1',
         watch: {
             ignored: ['**/storage/framework/views/**'],
         },

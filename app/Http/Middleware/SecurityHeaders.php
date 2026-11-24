@@ -24,13 +24,23 @@ class SecurityHeaders
 
         $response = $next($request);
 
+        // Local development only: while `npm run dev` runs, assets come from
+        // the Vite dev server on another port. Never in production, so a
+        // shared session always uses the built files.
+        $dev = '';
+        $devSocket = '';
+        if (app()->isLocal() && Vite::isRunningHot()) {
+            $dev = ' '.trim(file_get_contents(Vite::hotFile()));
+            $devSocket = ' '.preg_replace('#^http#', 'ws', trim($dev));
+        }
+
         $policy = implode('; ', [
             "default-src 'self'",
-            "script-src 'self' 'nonce-{$nonce}'",
-            "style-src 'self' 'nonce-{$nonce}'",
+            "script-src 'self' 'nonce-{$nonce}'{$dev}",
+            "style-src 'self' 'nonce-{$nonce}'{$dev}",
             "img-src 'self' data:",
-            "font-src 'self'",
-            "connect-src 'self'",
+            "font-src 'self'{$dev}",
+            "connect-src 'self'{$dev}{$devSocket}",
             "object-src 'none'",
             "base-uri 'none'",
             "form-action 'self'",

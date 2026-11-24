@@ -1,6 +1,12 @@
 <?php
 
-// Only two routes will exist here (added in step 2):
-//   GET /                  -> the CaseDemo Livewire component
-//   GET /results/download  -> the participant's results as JSON
-// Both are rate limited with throttle:60,1.
+use App\Http\Controllers\ResultsDownloadController;
+use App\Livewire\CaseDemo;
+use Illuminate\Support\Facades\Route;
+
+// The only two routes. Livewire adds its own update route, which has the
+// same rate limit (see AppServiceProvider).
+Route::middleware('throttle:120,1')->group(function () {
+    Route::get('/', CaseDemo::class)->name('demo');
+    Route::get('/results/download', ResultsDownloadController::class)->name('results.download');
+});

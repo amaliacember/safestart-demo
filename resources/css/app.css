@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 
-/* Self-hosted fonts, bundled by Vite. */
+/* Self-hosted fonts, bundled by Vite. No font CDN. */
 @import '@fontsource/source-serif-4/400.css';
 @import '@fontsource/source-serif-4/600.css';
 @import '@fontsource/atkinson-hyperlegible/400.css';
@@ -8,8 +8,140 @@
 
 @source '../../storage/framework/views/*.php';
 
-/* Theme tokens (colours, spacing) are added in step 2. */
+/*
+| Theme tokens. The default Tailwind palette is switched off (--color-*: initial)
+| so only these colours exist. Contrast on paper / sheet (WCAG, checked):
+|   ink 13.6 / 15.0, ink-soft 7.1 / 7.8, pine 8.6 / 9.4, alert 7.4 (sheet),
+|   edge 4.1 / 4.5 (borders need 3), ink on amber 8.1, sheet on pine 9.4,
+|   pine on pine-wash 7.9, amber-ink on amber-wash 6.4. All pass AA.
+*/
 @theme {
+    --color-*: initial;
+
+    --color-paper: #f4f2ec;      /* page background: warm off-white */
+    --color-sheet: #fffdf8;      /* the case-file sheet */
+    --color-ink: #1d2824;        /* body text, green-black */
+    --color-ink-soft: #46544e;   /* secondary text */
+    --color-line: #d9dbd2;       /* decorative dividers only */
+    --color-edge: #6b7872;       /* input and control borders */
+    --color-pine: #1f4d40;       /* main colour: actions, current step */
+    --color-pine-deep: #143a30;  /* hover/pressed */
+    --color-pine-wash: #e3ebe5;  /* selected answer background */
+    --color-amber: #f0b23e;      /* demo banner, warnings */
+    --color-amber-wash: #fbf0d6;
+    --color-amber-ink: #7a4e00;  /* amber-toned text on light backgrounds */
+    --color-alert: #9e2a1f;      /* form errors */
+    --color-alert-wash: #f8e5e1;
+
     --font-sans: 'Atkinson Hyperlegible', ui-sans-serif, system-ui, sans-serif;
     --font-serif: 'Source Serif 4', ui-serif, Georgia, serif;
+
+    --radius-control: 4px;
+    --radius-sheet: 6px;
+}
+
+@layer base {
+    html {
+        font-size: 106.25%; /* 17px body: comfortable on phones and laptops */
+        -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+        @apply bg-paper text-ink font-sans leading-relaxed antialiased;
+    }
+
+    h1, h2, h3 {
+        @apply font-serif text-ink;
+        font-weight: 600;
+        line-height: 1.2;
+        text-wrap: balance;
+    }
+
+    p, li {
+        text-wrap: pretty;
+    }
+
+    /* One clear focus style everywhere: thick pine ring with a paper gap. */
+    :focus-visible {
+        outline: 3px solid var(--color-pine);
+        outline-offset: 3px;
+        border-radius: 2px;
+    }
+
+    /* Headings get focus after a screen change (for screen readers); no ring needed. */
+    h1[tabindex='-1']:focus {
+        outline: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            transition-duration: 0.01ms !important;
+            animation-duration: 0.01ms !important;
+            scroll-behavior: auto !important;
+        }
+    }
+}
+
+/*
+| Shared button base. A @utility (not a plain class) so the button variants
+| below can @apply it. Min 48px tall: tap targets always above 44px.
+*/
+@utility btn {
+    @apply inline-flex min-h-12 items-center justify-center gap-2 px-5 py-2.5 font-sans font-bold leading-tight;
+    border-radius: var(--radius-control);
+    text-align: center;
+    cursor: pointer;
+}
+
+@layer components {
+    .btn-primary {
+        @apply btn bg-pine text-sheet;
+    }
+
+    .btn-primary:hover {
+        @apply bg-pine-deep;
+    }
+
+    .btn-secondary {
+        @apply btn border-2 border-pine bg-transparent text-pine;
+    }
+
+    .btn-secondary:hover {
+        @apply bg-pine-wash;
+    }
+
+    /* Quiet text-style button, e.g. "Back". Still 48px tall for touch. */
+    .btn-quiet {
+        @apply btn px-2 text-pine underline decoration-2 underline-offset-4;
+    }
+
+    .btn-quiet:hover {
+        @apply text-pine-deep decoration-pine-deep;
+    }
+
+    .field-label {
+        @apply block font-bold text-ink;
+    }
+
+    .field-hint {
+        @apply mt-1 block text-[0.9375rem] text-ink-soft;
+    }
+
+    .field-input {
+        @apply mt-2 block min-h-12 w-full max-w-xs border-2 border-edge bg-sheet px-3 py-2 font-sans text-lg text-ink;
+        border-radius: var(--radius-control);
+    }
+
+    .field-input[aria-invalid='true'] {
+        @apply border-alert;
+    }
+
+    .field-error {
+        @apply mt-2 block font-bold text-alert;
+    }
+
+    /* The serif "case note" text on the scenario card. */
+    .case-note {
+        @apply font-serif text-[1.1875rem] leading-[1.7] text-ink;
+    }
 }
