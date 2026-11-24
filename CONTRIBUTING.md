@@ -51,7 +51,7 @@ classes that only your module uses go in `app/Support/<Module>/` (see
 - `app/Http/*` (middleware, download controller), `app/Providers/*`, `bootstrap/app.php`, `routes/web.php`
 - `config/safestart/demo.php`, `config/safestart/modules.php`, `lang/{nl,en}/demo.php`
 - `resources/views/layouts/*`, `resources/views/components/*`, `resources/views/livewire/*`, `resources/views/modules/intro.blade.php`
-- `resources/css/app.css`, `resources/js/app.js`, `e2e/helpers.ts`, `.github/*`, `CONTRIBUTING.md`, `docs/TEAM.md`
+- `resources/css/app.css`, `resources/js/app.js`, `e2e/helpers.ts`, `.github/*`, `AGENTS.md`, `CONTRIBUTING.md`, `docs/TEAM.md`
 
 If your module needs a shared file to change, propose it to the group instead
 of editing it on your module branch.

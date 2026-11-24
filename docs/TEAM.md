@@ -48,7 +48,7 @@ Shared files (only change after telling the group, Amalia merges these):
 - `app/Http/*` (middleware, download controller), `app/Providers/*`, `bootstrap/app.php`, `routes/web.php`
 - `config/safestart/demo.php`, `config/safestart/modules.php`, `lang/{nl,en}/demo.php`
 - `resources/views/layouts/*`, `resources/views/components/*`, `resources/views/livewire/*`, `resources/views/modules/intro.blade.php`
-- `resources/css/app.css`, `resources/js/app.js`, `e2e/helpers.ts`, `.github/*`, `CONTRIBUTING.md`, `docs/TEAM.md`
+- `resources/css/app.css`, `resources/js/app.js`, `e2e/helpers.ts`, `.github/*`, `AGENTS.md`, `CONTRIBUTING.md`, `docs/TEAM.md`
 
 The start page lists the five modules. Each module also has its own direct link (`/m/<module>`) so an interviewer can send just their part.
 
