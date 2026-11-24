@@ -17,6 +17,10 @@ return [
 
     'locales' => ['nl', 'en'],
 
+    // The address Herd serves this site at. `php artisan demo:preflight`
+    // checks this page for Herd Studio's injected script before sharing.
+    'herd_url' => env('HERD_URL', 'http://safestart-demo.test'),
+
     /*
     | The six quick-check questions. The text is in lang/{nl,en}/demo.php under
     | "questions.q1" etc. Each question is answered yes / no / unknown.

@@ -137,7 +137,7 @@ describe('routes', function () {
     });
 
     it('rate limits both demo routes', function (string $name) {
-        expect(Route::getRoutes()->getByName($name)->gatherMiddleware())->toContain('throttle:120,1');
+        expect(Route::getRoutes()->getByName($name)->gatherMiddleware())->toContain('throttle:demo');
     })->with(['demo', 'results.download']);
 
     it('does not serve files from storage', function () {
@@ -150,6 +150,6 @@ describe('routes', function () {
         $route = collect(Route::getRoutes()->getRoutes())
             ->first(fn ($route) => str_ends_with((string) $route->getName(), 'livewire.update'));
 
-        expect($route->gatherMiddleware())->toContain('throttle:120,1');
+        expect($route->gatherMiddleware())->toContain('throttle:demo');
     });
 });

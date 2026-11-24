@@ -1,58 +1,89 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SafeStart caseworker demo
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A clickable prototype for the Thomas More course "The Digital Startup" (team DreamTeam).
+During a video call, a caseworker opens a link, works through three made-up cases,
+and the app measures how long each case takes and whether they reach the right route.
 
-## About Laravel
+**Everything is fake.** There is no real scan, no real order and no real person.
+Nothing is stored for the team: the results live only in the participant's own
+session until they copy or download them and close the session.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+> The rest of this README (how to change questions, scenarios and prices, and an
+> architecture overview) is added in step 6.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Run it locally in Herd
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+composer install
+npm install
+cp .env.example .env          # then, for development: APP_ENV=local, APP_DEBUG=true
+php artisan key:generate
+npm run build                 # or `npm run dev` while you work on the look
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Open http://safestart-demo.test.
 
-## Contributing
+## Sharing a session with `herd share`
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Do these steps before **every** session, in this order.
 
-## Code of Conduct
+1. **Run the preflight check.**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+   ```bash
+   php artisan config:clear
+   php artisan demo:preflight
+   ```
 
-## Security Vulnerabilities
+   It checks that debug is off, the app runs in production mode, the Vite dev
+   server is stopped, the assets are built, the session is encrypted and only
+   sent over HTTPS, and that Herd Studio does not inject anything into the
+   page. Every failed check says what to change. Fix it and run the check
+   again until it says **All checks passed**. Do not share before that.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+   The usual fixes:
+   - Stop `npm run dev` (Ctrl+C) and run `npm run build`.
+   - Put the sharing values from `.env.example` in your `.env` (keep your own
+     `APP_KEY`), then `php artisan config:clear`.
+   - Turn Herd Studio off (see below).
 
-## License
+2. **Start sharing:** `herd share`. Give the participant the HTTPS link it shows.
+   The link never contains the session code: the interviewer says the code out loud.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+3. **After the session:** stop sharing with Ctrl+C in the `herd share` window.
+   For development, set `APP_ENV=local` and `APP_DEBUG=true` again.
+
+### Turning Herd Studio off
+
+Herd Studio is a Herd developer tool. When it is on, Herd's own web server adds
+a script (`/herd-studio/loader.js`) and an "Edit with Herd" button to every page,
+including pages viewed through `herd share`. That breaks our "no extra scripts"
+rule, so it must be off during a session.
+
+- **For the whole of Herd:** open Herd → **Settings** → **Herd Studio** → turn
+  off **Enable Herd Studio**.
+- **For this site only:** open Herd → **Sites** → select **safestart-demo** →
+  in the panel on the right, under Studio, turn off **Show the Herd Studio badge**.
+
+Check that it worked (no output means it is off):
+
+```bash
+curl -s http://safestart-demo.test/ | grep herd-studio
+```
+
+`php artisan demo:preflight` runs the same check.
+
+## Tests
+
+```bash
+php artisan test        # Pest: unit and Livewire feature tests
+npm run test:e2e        # Playwright: all 3 cases, NL + EN, 390 px + 1280 px
+```
+
+The Playwright run saves a screenshot of every screen in `docs/screenshots`.
+It runs against http://safestart-demo.test; use `DEMO_URL=https://... npm run test:e2e`
+for another address.
+
+## Dutch text
+
+All Dutch text is in `lang/nl/demo.php`. **It still needs a check by a
+Dutch-speaking (Flemish) teammate.**

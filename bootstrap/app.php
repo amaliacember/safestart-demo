@@ -20,9 +20,9 @@ return Application::configure(basePath: dirname(__DIR__))
         // loopback only, and only the protocol/host/port headers. That way
         // Laravel sees the request as HTTPS (secure cookies, https:// URLs).
         // X-Forwarded-For is deliberately NOT trusted: a visitor could put a
-        // fake IP in it to dodge the rate limiter. The cost is that everyone
-        // coming through the tunnel shares one rate-limit counter, which is
-        // fine because only one participant uses a share link at a time.
+        // fake IP in it to dodge the rate limiter. So everyone coming through
+        // the tunnel has the same IP; the "demo" rate limiter therefore counts
+        // per session first (see AppServiceProvider).
         $middleware->trustProxies(
             at: ['127.0.0.1', '::1'],
             headers: Request::HEADER_X_FORWARDED_PROTO

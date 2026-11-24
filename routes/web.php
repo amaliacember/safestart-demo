@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 // The only two routes. Livewire adds its own update route, which has the
 // same rate limit (see AppServiceProvider).
-Route::middleware('throttle:120,1')->group(function () {
+Route::middleware('throttle:demo')->group(function () {
     Route::get('/', CaseDemo::class)->name('demo');
     Route::get('/results/download', ResultsDownloadController::class)->name('results.download');
 });
