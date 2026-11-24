@@ -10,8 +10,10 @@
     <p class="mt-1">{{ __('demo.advice.reasons.'.$packageReason) }}</p>
 </div>
 
+{{-- What moves to the new phone only matters when a new phone is advised. --}}
+@if ($packageAdvised)
 <h2 class="mt-8 text-[1.25rem]">{{ __('demo.advice.keeps_title') }}</h2>
-<dl class="mt-3 divide-y divide-line border-y border-line">
+<dl class="mt-3 divide-y divide-line border-t border-line">
     <div class="flex gap-3 py-3">
         <dt class="shrink-0">
             <svg class="mt-1 size-5 text-pine" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M6.2 11.6 2.6 8l1.3-1.3 2.3 2.3 5.9-5.9 1.3 1.3-7.2 7.2Z"/></svg>
@@ -27,6 +29,7 @@
         <dd>{{ __('demo.advice.stays') }}</dd>
     </div>
 </dl>
+@endif
 
 <x-actions>
     @if ($packageAdvised)

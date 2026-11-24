@@ -163,7 +163,7 @@ return [
         'reasons' => [
             'advised_scan' => 'De scan vond spyware. Een schone gsm met nieuwe accounts is de veiligste weg.',
             'advised_access' => 'De ex-partner had toegang tot de gsm of wachtwoorden, en er zijn gedeelde accounts.',
-            'not_advised' => 'Volg de route hierboven. Een nieuwe gsm is nu niet nodig.',
+            'not_advised' => 'Volg de stappen van de route. Een nieuwe gsm is nu niet nodig.',
         ],
         'keeps_title' => 'Wat je cliënt meeneemt naar een nieuwe gsm',
         'moves' => 'Foto\'s en contacten gaan mee.',

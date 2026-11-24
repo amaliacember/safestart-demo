@@ -162,7 +162,7 @@ return [
         'reasons' => [
             'advised_scan' => 'The scan found spyware. A clean phone with new accounts is the safest way forward.',
             'advised_access' => 'The ex-partner had access to the phone or passwords, and accounts are shared.',
-            'not_advised' => 'Follow the route above. A new phone is not needed now.',
+            'not_advised' => 'Follow the steps of the route. A new phone is not needed now.',
         ],
         'keeps_title' => 'What your client takes to a new phone',
         'moves' => 'Photos and contacts move over.',

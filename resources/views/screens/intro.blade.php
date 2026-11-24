@@ -1,7 +1,6 @@
 {{-- Intro: language, what to expect, session code. --}}
-<div class="flex flex-wrap items-center justify-between gap-4">
-    <h1 id="screen-title" tabindex="-1" class="text-[2rem] sm:text-[2.5rem]">{{ __('demo.intro.title') }}</h1>
-
+{{-- Language first and top right, so on phones it does not wedge between title and text. --}}
+<div class="flex justify-end">
     <div role="group" aria-label="{{ __('demo.intro.language_label') }}" class="flex rounded-[var(--radius-control)] border-2 border-ink">
         @foreach (config('safestart.locales') as $locale)
             <button
@@ -21,6 +20,8 @@
         @endforeach
     </div>
 </div>
+
+<h1 id="screen-title" tabindex="-1" class="mt-4 text-[2rem] sm:text-[2.5rem]">{{ __('demo.intro.title') }}</h1>
 
 <p class="mt-6 max-w-prose font-serif text-[1.3125rem] leading-snug">{{ __('demo.intro.lead') }}</p>
 

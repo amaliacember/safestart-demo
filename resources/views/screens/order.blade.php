@@ -4,7 +4,7 @@
 <h1 id="screen-title" tabindex="-1" class="text-[1.75rem] sm:text-[2rem]">{{ __('demo.order.title') }}</h1>
 <p class="mt-4 max-w-prose">{{ __('demo.order.lead') }}</p>
 
-<dl class="mt-6 divide-y divide-line border-y border-line">
+<dl class="mt-6 divide-y divide-line border-t border-line">
     <div class="py-3 sm:grid sm:grid-cols-[10rem_1fr] sm:gap-4">
         <dt class="font-bold">{{ __('demo.order.price_label') }}</dt>
         <dd class="tabular-nums">
@@ -26,5 +26,9 @@
 
 <x-actions>
     <button type="button" wire:click="orderPackage" class="btn-primary">{{ __('demo.order.submit') }}</button>
-    <button type="button" wire:click="closeWithoutOrder" class="btn-quiet">{{ __('demo.order.skip') }}</button>
 </x-actions>
+
+{{-- The way out without ordering: below the bar, so the main action stays clear. --}}
+<div class="mt-2 flex sm:justify-end">
+    <button type="button" wire:click="closeWithoutOrder" class="btn-quiet -ml-2 sm:-mr-2 sm:ml-0">{{ __('demo.order.skip') }}</button>
+</div>

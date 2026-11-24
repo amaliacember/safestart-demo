@@ -7,8 +7,9 @@
 
 <p class="font-bold text-ink-soft">{{ __('demo.progress.case', ['n' => $scenarioIndex + 1, 'total' => $caseCount]) }}</p>
 
+{{-- The heading is just the name; "Case 1 of 3" above already says it is a case. --}}
 <h1 id="screen-title" tabindex="-1" class="mt-2 text-[2rem] sm:text-[2.5rem]">
-    {{ __('demo.scenario.title', ['letter' => $scenario, 'name' => __('demo.scenarios.'.$scenario.'.name')]) }}
+    {{ __('demo.scenarios.'.$scenario.'.name') }}
 </h1>
 
 {{-- The story, set like a note in a case file. --}}
