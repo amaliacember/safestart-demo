@@ -59,6 +59,8 @@ You should see the start page with module 1 as a link and the other modules
 as "coming soon". `.env.example` already has the right local settings: no
 database, file sessions, debug on.
 
+Using an AI assistant? Point it to AGENTS.md. Claude Code users: create a local CLAUDE.md containing @AGENTS.md.
+
 ### While you work on the look
 
 Run `npm run dev` in a second window. Styles and scripts then reload as you

@@ -30,6 +30,5 @@ Thumbs.db
 /blob-report
 /playwright/.cache
 
-# Local instructions for AI tools; the shared rules are in CONTRIBUTING.md
+# Local file for Claude Code; it only contains @AGENTS.md
 /CLAUDE.md
-/AGENTS.md
