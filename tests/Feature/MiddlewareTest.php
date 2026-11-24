@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Vite;
@@ -59,6 +60,28 @@ describe('SetLocale', function () {
 
     it('ignores a language that is not allowed', function () {
         expect($this->withSession(['locale' => 'fr'])->get('/_probe')->getContent())->toStartWith('nl|');
+    });
+});
+
+describe('trusted proxies', function () {
+    beforeEach(function () {
+        Route::middleware('web')->get('/_proxy', fn (Request $request) => $request->ip().'|'.($request->secure() ? 'https' : 'http'));
+    });
+
+    it('sees tunnel requests as HTTPS but ignores a forged client IP', function () {
+        $response = $this->withServerVariables(['REMOTE_ADDR' => '127.0.0.1'])
+            ->withHeaders(['X-Forwarded-Proto' => 'https', 'X-Forwarded-For' => '203.0.113.9'])
+            ->get('/_proxy');
+
+        expect($response->getContent())->toBe('127.0.0.1|https');
+    });
+
+    it('ignores proxy headers from anyone but loopback', function () {
+        $response = $this->withServerVariables(['REMOTE_ADDR' => '198.51.100.7'])
+            ->withHeaders(['X-Forwarded-Proto' => 'https'])
+            ->get('/_proxy');
+
+        expect($response->getContent())->toBe('198.51.100.7|http');
     });
 });
 

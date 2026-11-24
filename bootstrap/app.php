@@ -5,6 +5,7 @@ use App\Http\Middleware\SetLocale;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     // No health route (/up): the demo only exposes the routes in routes/web.php
@@ -16,10 +17,18 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         // `herd share` puts an Expose tunnel in front of Herd. The tunnel client
         // talks to Herd from this same machine, so we trust proxy headers from
-        // loopback only. That way Laravel sees the request as HTTPS (secure
-        // cookies, https:// URLs), while a visitor cannot fake their IP address
-        // to dodge the rate limiter.
-        $middleware->trustProxies(at: ['127.0.0.1', '::1']);
+        // loopback only, and only the protocol/host/port headers. That way
+        // Laravel sees the request as HTTPS (secure cookies, https:// URLs).
+        // X-Forwarded-For is deliberately NOT trusted: a visitor could put a
+        // fake IP in it to dodge the rate limiter. The cost is that everyone
+        // coming through the tunnel shares one rate-limit counter, which is
+        // fine because only one participant uses a share link at a time.
+        $middleware->trustProxies(
+            at: ['127.0.0.1', '::1'],
+            headers: Request::HEADER_X_FORWARDED_PROTO
+                | Request::HEADER_X_FORWARDED_HOST
+                | Request::HEADER_X_FORWARDED_PORT,
+        );
 
         // Appended to the "web" group so they run after the session has started.
         // Livewire's update requests use the same group, so they get the same
