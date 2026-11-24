@@ -69,9 +69,9 @@ document.addEventListener('alpine:init', () => {
     }));
 
     /*
-     * "Copy results". Uses the Clipboard API when the page is on HTTPS
-     * (as it is through herd share); falls back to selecting the text and
-     * the older copy command on plain http://*.test.
+     * "Copy results". Uses the Clipboard API when the page is on HTTPS;
+     * on a laptop's plain http:// it falls back to selecting the text and
+     * the older copy command.
      */
     Alpine.data('copyResults', () => ({
         message: '',

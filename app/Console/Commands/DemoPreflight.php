@@ -10,8 +10,9 @@ use Throwable;
 /**
  * php artisan demo:preflight
  *
- * Run this before every session, before `herd share`. It checks that the app
- * is in its safe "sharing" state and fails with a clear message if not.
+ * Run this before the demo is ever shared beyond your own laptop (a tunnel
+ * or a server). It checks that the app is in its safe "sharing" state and
+ * fails with a clear message if not. See the README, "Settings for sharing".
  * Run `php artisan config:clear` first if you cached the config.
  */
 class DemoPreflight extends Command
@@ -72,7 +73,7 @@ class DemoPreflight extends Command
             return self::FAILURE;
         }
 
-        $this->components->info('All checks passed. You can run `herd share` now.');
+        $this->components->info('All checks passed. The demo is safe to share.');
 
         return self::SUCCESS;
     }
@@ -86,10 +87,10 @@ class DemoPreflight extends Command
      */
     private function herdStudioCheck(): array
     {
-        // The address Herd itself serves (what `herd share` tunnels), not
+        // The address Herd itself serves (what a tunnel would pass on), not
         // APP_URL: `php artisan serve` would skip Herd's web server and hide
         // the injection.
-        $url = config('safestart.herd_url');
+        $url = config('safestart.demo.herd_url');
         $label = "Herd Studio is off (no /herd-studio script at {$url})";
 
         try {

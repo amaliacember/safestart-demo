@@ -20,7 +20,7 @@ class SetLocale
     {
         $locale = $request->session()->get('locale');
 
-        if (in_array($locale, config('safestart.locales'), true)) {
+        if (in_array($locale, config('safestart.demo.locales'), true)) {
             App::setLocale($locale);
         }
 

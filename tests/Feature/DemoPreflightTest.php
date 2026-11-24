@@ -33,7 +33,7 @@ beforeEach(function () {
         'app.debug' => false,
         'app.env' => 'production',
         'app.key' => 'base64:'.base64_encode(str_repeat('k', 32)),
-        'safestart.herd_url' => 'http://safestart-demo.test',
+        'safestart.demo.herd_url' => 'http://safestart-demo.test',
         'session.encrypt' => true,
         'session.secure' => true,
         'session.driver' => 'file',

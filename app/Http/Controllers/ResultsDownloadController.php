@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Support\Modules;
 use App\Support\SessionLog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 /**
- * GET /results/download: the participant's results as a JSON file.
+ * GET /results/download: the participant's results as a JSON file, for every
+ * module done in this session.
  *
  * Reads only from the participant's own session; there is nothing on the
  * server to look up. The session code in the file name was validated on the
@@ -21,15 +23,12 @@ class ResultsDownloadController
 
         abort_unless(is_array($data) && isset($data['session_code']), 404);
 
-        $summary = (new SessionLog($data))->summary(
-            array_keys(config('safestart.scenarios')),
-            config('safestart.timing.target_total_minutes') * 60_000,
-        );
+        $results = Modules::results(new SessionLog($data));
 
-        $filename = 'safestart-demo-'.$summary['session_code'].'.json';
+        $filename = 'safestart-demo-'.$results['session_code'].'.json';
 
         return response()->json(
-            ['demo' => true, 'note' => 'Made-up cases. Times are in milliseconds.'] + $summary,
+            ['demo' => true, 'note' => 'Made-up cases. Times are in milliseconds.'] + $results,
             200,
             [
                 'Content-Disposition' => 'attachment; filename="'.$filename.'"',

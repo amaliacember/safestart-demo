@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Vite;
 
 /*
-| The real screens arrive in step 2. Until then these tests use a throwaway
-| route inside the "web" group, which is where both middleware are attached.
+| These tests use a throwaway route inside the "web" group, which is where
+| both middleware are attached.
 */
 beforeEach(function () {
     Route::middleware('web')->get('/_probe', fn () => App::getLocale().'|'.Vite::cspNonce());
@@ -127,19 +127,24 @@ describe('routes', function () {
         $this->get($path)->assertNotFound();
     })->with(['/up', '/welcome', '/login']);
 
-    it('registers only the two demo routes besides Livewire\'s own', function () {
+    it('registers only the start page, one link per module and the results, besides Livewire\'s own', function () {
         $ours = collect(Route::getRoutes()->getRoutes())
             ->map->uri()
             ->reject(fn ($uri) => str_starts_with($uri, 'livewire-') || str_starts_with($uri, '_'))
             ->values()
             ->all();
 
-        expect($ours)->toEqualCanonicalizing(['/', 'results/download']);
+        expect($ours)->toEqualCanonicalizing([
+            '/',
+            'm/caseworker', 'm/handover', 'm/vault', 'm/organisation', 'm/donor', 'm/template',
+            'results',
+            'results/download',
+        ]);
     });
 
-    it('rate limits both demo routes', function (string $name) {
+    it('rate limits every demo route', function (string $name) {
         expect(Route::getRoutes()->getByName($name)->gatherMiddleware())->toContain('throttle:demo');
-    })->with(['demo', 'results.download']);
+    })->with(['start', 'module.caseworker', 'module.handover', 'module.template', 'results', 'results.download']);
 
     it('does not serve files from storage', function () {
         $uris = collect(Route::getRoutes()->getRoutes())->map->uri();

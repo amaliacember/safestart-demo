@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
         //
         // 120 per minute per session: far more than a person clicking through
         // a case needs, so one participant never sees a "too many requests".
-        // 600 per minute per IP on top: everyone behind the herd share tunnel
+        // 600 per minute per IP on top: everyone behind a tunnel or proxy
         // has the same IP, so this caps the total, also for a client that
         // drops its cookie to get a fresh session on every request.
         RateLimiter::for('demo', function (Request $request) {

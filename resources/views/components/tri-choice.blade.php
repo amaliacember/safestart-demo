@@ -1,10 +1,17 @@
-@props(['question', 'number'])
+@props(['question', 'number', 'label', 'options'])
 
 {{--
-    One quick-check question with Yes / No / Don't know. Real radio buttons in
-    a fieldset, so keyboard (arrow keys) and screen readers work as usual.
-    wire:model.live sends each pick to the server, so a "Choose an answer"
-    error disappears as soon as the question is answered (see updatedAnswers).
+    One question with a few fixed answers (e.g. Yes / No / Don't know).
+
+    question: the field key; the value lands in $answers[question]
+    number:   shown in front of the question
+    label:    the question text
+    options:  ['yes' => 'Yes', 'no' => 'No', ...] (up to three fit on a phone)
+
+    Real radio buttons in a fieldset, so keyboard (arrow keys) and screen
+    readers work as usual. wire:model.live sends each pick to the server, so
+    a "Choose an answer" error can disappear as soon as the question is
+    answered (see CaseworkerCheck::updatedAnswers).
 --}}
 @php
     $field = "answers.{$question}";
@@ -17,11 +24,11 @@
 >
     <legend class="float-left flex w-full gap-3 font-bold leading-snug">
         <span class="w-5 shrink-0 font-serif text-ink-soft tabular-nums">{{ $number }}</span>
-        <span>{{ __('demo.questions.'.$question) }}</span>
+        <span>{{ $label }}</span>
     </legend>
 
     <div class="clear-both grid grid-cols-3 gap-2 pt-3 sm:pl-8">
-        @foreach (config('safestart.answers') as $answer)
+        @foreach ($options as $answer => $answerLabel)
             <label class="group relative">
                 <input
                     type="radio"
@@ -39,7 +46,7 @@
                     <svg class="mr-1.5 hidden size-4 shrink-0 group-has-checked:block" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
                         <path fill="currentColor" d="M6.2 11.6 2.6 8l1.3-1.3 2.3 2.3 5.9-5.9 1.3 1.3-7.2 7.2Z"/>
                     </svg>
-                    {{ __('demo.answers.'.$answer) }}
+                    {{ $answerLabel }}
                 </span>
             </label>
         @endforeach
