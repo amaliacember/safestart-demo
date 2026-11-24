@@ -2,13 +2,13 @@
 
 One demo, five modules, one person per module. Each person builds their module **and** runs 2 test sessions with their own audience. Everything here is a proposal the team agreed on in class on Tue 24 Nov; change it together if something does not work.
 
-| # | Module | Owner | Hypothesis | Test with |
-|---|---|---|---|---|
-| 1 | Caseworker check | Amalia | H1 caseworkers use the scan and checklist | Caseworkers |
-| 2 | Phone handover and data transfer | Noah | H2 survivors accept the replacement phone | Caseworkers |
-| 3 | Evidence vault | *to choose* | Police / justice centres accept the evidence package (list no. 3) | Caseworkers, plus a police, lawyer or family justice centre contact if anyone has one |
-| 4 | Organisation side | Ana-Maria | H3 CAW offices buy a subscription | CAW managers / team leads |
-| 5 | Phone donor and refurb partner | *to choose* | H4 corporate IT partners supply 60 used phones | Company IT or facility managers |
+| # | Module | Key (link `/m/<key>`) | Class (`app/Livewire/Modules/`) | Owner | Hypothesis | Test with |
+|---|---|---|---|---|---|---|
+| 1 | Caseworker check | `caseworker` | `CaseworkerCheck` | Amalia | H1 caseworkers use the scan and checklist | Caseworkers |
+| 2 | Phone handover and data transfer | `handover` | `PhoneHandover` | Noah | H2 survivors accept the replacement phone | Caseworkers |
+| 3 | Evidence vault | `vault` | `EvidenceVault` | *to choose* | Police / justice centres accept the evidence package (list no. 3) | Caseworkers, plus a police, lawyer or family justice centre contact if anyone has one |
+| 4 | Organisation side | `organisation` | `OrganisationSide` | Ana-Maria | H3 CAW offices buy a subscription | CAW managers / team leads |
+| 5 | Phone donor and refurb partner | `donor` | `PhoneDonor` | *to choose* | H4 corporate IT partners supply 60 used phones | Company IT or facility managers |
 
 ---
 
@@ -40,8 +40,15 @@ tests/Feature/Modules/<Name>Test.php     start-to-finish test
 e2e/<module>.spec.ts                     Playwright run + screenshots
 ```
 
+Use the key and class name from the table at the top: the key names your config, lang and view files (`config/safestart/handover.php`), the class is your Livewire class (`PhoneHandover.php`). Both are already registered in `config/safestart/modules.php`, so `/m/<key>` shows your module as soon as your class exists.
+
 Shared files (only change after telling the group, Amalia merges these):
-`resources/views/layouts/*`, `resources/views/components/*`, `resources/css/app.css`, `app/Support/SessionLog.php`, `app/Http/Middleware/*`, `routes/web.php`, `bootstrap/app.php`, `CLAUDE.md`.
+- `app/Livewire/Modules/Module.php` (base class), `app/Livewire/StartPage.php`, `app/Livewire/Results.php`, `app/Livewire/ComingSoon.php`
+- `app/Support/SessionLog.php`, `app/Support/Modules.php`, `app/Support/ResultsText.php`
+- `app/Http/*` (middleware, download controller), `app/Providers/*`, `bootstrap/app.php`, `routes/web.php`
+- `config/safestart/demo.php`, `config/safestart/modules.php`, `lang/{nl,en}/demo.php`
+- `resources/views/layouts/*`, `resources/views/components/*`, `resources/views/livewire/*`, `resources/views/modules/intro.blade.php`
+- `resources/css/app.css`, `resources/js/app.js`, `e2e/helpers.ts`, `.github/*`, `CLAUDE.md`, `docs/TEAM.md`
 
 The start page lists the five modules. Each module also has its own direct link (`/m/<module>`) so an interviewer can send just their part.
 
