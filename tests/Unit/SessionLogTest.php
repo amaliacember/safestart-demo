@@ -99,8 +99,8 @@ it('adds up time per screen, including revisits', function () {
 
 it('keeps only the latest check answers', function () {
     $this->log->startCase('C', at: 0);
-    $this->log->recordCheck('C', answers(q2: 'unknown'), ['scan', 'shared'], true);
-    $this->log->recordCheck('C', answers(q2: 'no', q4: 'yes'), ['shared'], true);
+    $this->log->recordCheck('C', answers(q2: 'unknown'), ['scan', 'shared'], 'extra');
+    $this->log->recordCheck('C', answers(q2: 'no', q4: 'yes'), ['shared'], 'exact');
 
     $case = $this->log->summary(['C'], TEN_MINUTES)['cases'][0];
 
@@ -137,11 +137,11 @@ it('survives a round trip through the session array', function () {
 
 describe('summary', function () {
     // Plays three cases: A (2 min, 3.5 s scan), B (1 min), C (3 min, 3.5 s scan).
-    function playAllCases(SessionLog $log, bool $matchC = true): void
+    function playAllCases(SessionLog $log, string $outcomeC = 'extra'): void
     {
         $log->startCase('A', at: 0);
         $log->recordCaseNumber('A', 'DEMO-0417');
-        $log->recordCheck('A', answers(q1: 'yes', q2: 'yes', q6: 'yes'), ['scan'], true);
+        $log->recordCheck('A', answers(q1: 'yes', q2: 'yes', q6: 'yes'), ['scan'], 'exact');
         $log->scanAnimationStarted('A', at: 30_000);
         $log->scanAnimationEnded('A', at: 33_500);
         $log->recordScan('A', true);
@@ -150,12 +150,12 @@ describe('summary', function () {
         $log->finishCase('A', at: 120_000);
 
         $log->startCase('B', at: 130_000);
-        $log->recordCheck('B', answers(q3: 'yes'), ['message'], true);
+        $log->recordCheck('B', answers(q3: 'yes'), ['message'], 'exact');
         $log->recordPackage('B', advised: false);
         $log->finishCase('B', at: 190_000);
 
         $log->startCase('C', at: 200_000);
-        $log->recordCheck('C', answers(q1: 'yes', q2: 'unknown', q4: 'yes', q5: 'yes'), ['scan', 'shared'], $matchC);
+        $log->recordCheck('C', answers(q1: 'yes', q2: 'unknown', q4: 'yes', q5: 'yes'), ['scan', 'shared'], $outcomeC);
         $log->scanAnimationStarted('C', at: 230_000);
         $log->scanAnimationEnded('C', at: 233_500);
         $log->recordScan('C', false);
@@ -175,7 +175,7 @@ describe('summary', function () {
             ->total_time_ms->toBe(360_000)
             ->total_time_without_scan_ms->toBe(353_000)
             ->total_back_clicks->toBe(1)
-            ->routes_matched->toBe(3)
+            ->route_outcomes->toBe(['exact' => 2, 'extra' => 1, 'missed' => 0])
             ->under_time_target->toBeTrue()
             ->and(array_column($summary['cases'], 'time_ms'))->toBe([120_000, 60_000, 180_000])
             ->and($summary['cases'][0])
@@ -186,9 +186,9 @@ describe('summary', function () {
     });
 
     it('counts routes that did not match', function () {
-        playAllCases($this->log, matchC: false);
+        playAllCases($this->log, outcomeC: 'missed');
 
-        expect($this->log->summary(['A', 'B', 'C'], TEN_MINUTES)['routes_matched'])->toBe(2);
+        expect($this->log->summary(['A', 'B', 'C'], TEN_MINUTES)['route_outcomes'])->toBe(['exact' => 2, 'extra' => 0, 'missed' => 1]);
     });
 
     it('misses the time target when the total is too long', function () {

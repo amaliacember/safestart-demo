@@ -69,7 +69,7 @@ final class SessionLog
             'case_number' => null,
             'answers' => null,
             'routes' => null,
-            'route_matches_expected' => null,
+            'route_outcome' => null,
             'scan_found' => null,
             'package_advised' => null,
             'package_ordered' => false,
@@ -122,12 +122,12 @@ final class SessionLog
      * Saves the latest check answers. If the participant goes back and changes
      * them, the new answers replace the old ones.
      */
-    public function recordCheck(string $scenario, array $answers, array $routes, bool $matchesExpected): void
+    public function recordCheck(string $scenario, array $answers, array $routes, string $routeOutcome): void
     {
-        $this->update($scenario, function (array &$case) use ($answers, $routes, $matchesExpected) {
+        $this->update($scenario, function (array &$case) use ($answers, $routes, $routeOutcome) {
             $case['answers'] = $answers;
             $case['routes'] = $routes;
-            $case['route_matches_expected'] = $matchesExpected;
+            $case['route_outcome'] = $routeOutcome;
         });
     }
 
@@ -192,7 +192,13 @@ final class SessionLog
             'total_time_ms' => $total,
             'total_time_without_scan_ms' => array_sum(array_column($finished, 'time_without_scan_ms')),
             'total_back_clicks' => array_sum(array_column($cases, 'back_clicks')),
-            'routes_matched' => count(array_filter($cases, fn ($case) => $case['route_matches_expected'] === true)),
+            // How many cases ended exact / extra / missed. Cases without a
+            // finished check are not counted.
+            'route_outcomes' => [
+                'exact' => count(array_keys(array_column($cases, 'route_outcome'), 'exact', true)),
+                'extra' => count(array_keys(array_column($cases, 'route_outcome'), 'extra', true)),
+                'missed' => count(array_keys(array_column($cases, 'route_outcome'), 'missed', true)),
+            ],
             'under_time_target' => $allFinished && $total < $targetTotalMs,
         ];
     }
@@ -212,7 +218,7 @@ final class SessionLog
                 'back_clicks' => 0,
                 'answers' => null,
                 'routes' => null,
-                'route_matches_expected' => null,
+                'route_outcome' => null,
                 'scan_found' => null,
                 'package_advised' => null,
                 'package_ordered' => false,
@@ -233,7 +239,7 @@ final class SessionLog
             'back_clicks' => $case['back_clicks'],
             'answers' => $case['answers'],
             'routes' => $case['routes'],
-            'route_matches_expected' => $case['route_matches_expected'],
+            'route_outcome' => $case['route_outcome'],
             'scan_found' => $case['scan_found'],
             'package_advised' => $case['package_advised'],
             'package_ordered' => $case['package_ordered'],

@@ -100,6 +100,6 @@ describe('routes', function () {
         $route = collect(Route::getRoutes()->getRoutes())
             ->first(fn ($route) => str_ends_with((string) $route->getName(), 'livewire.update'));
 
-        expect($route->gatherMiddleware())->toContain('throttle:60,1');
+        expect($route->gatherMiddleware())->toContain('throttle:120,1');
     });
 });

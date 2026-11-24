@@ -86,18 +86,31 @@ describe('package advice', function () {
     });
 });
 
-describe('route matching', function () {
-    it('accepts route sets in any order', function () {
-        expect($this->triage->matchesScenario('C', ['shared', 'scan']))->toBeTrue();
+describe('route outcome', function () {
+    it('is exact when the routes are the expected ones', function () {
+        expect($this->triage->routeOutcome('A', ['scan']))->toBe('exact');
     });
 
-    it('rejects routes that are not accepted for the scenario', function () {
-        expect($this->triage->matchesScenario('B', ['scan', 'message']))->toBeFalse()
-            ->and($this->triage->matchesScenario('A', ['none']))->toBeFalse();
+    it('is extra when every expected route is there, plus more', function () {
+        expect($this->triage->routeOutcome('C', ['scan', 'shared']))->toBe('extra')
+            ->and($this->triage->routeOutcome('B', ['message', 'shared']))->toBe('extra');
+    });
+
+    it('is missed when an expected route is absent', function () {
+        expect($this->triage->routeOutcome('A', ['none']))->toBe('missed')
+            ->and($this->triage->routeOutcome('B', ['scan']))->toBe('missed');
+    });
+
+    it('is missed, not extra, when one is missing and another added', function () {
+        expect($this->triage->routeOutcome('C', ['scan', 'message']))->toBe('missed');
+    });
+
+    it('ignores the order of routes', function () {
+        expect($this->triage->routeOutcome('C', ['shared', 'scan']))->toBe('extra');
     });
 
     it('throws for an unknown scenario', function () {
-        $this->triage->matchesScenario('Z', ['none']);
+        $this->triage->routeOutcome('Z', ['none']);
     })->throws(InvalidArgumentException::class);
 });
 
@@ -116,7 +129,7 @@ describe('scenarios', function () {
 
             return [
                 'routes' => $routes,
-                'matches' => $this->triage->matchesScenario($scenario, $routes),
+                'outcome' => $this->triage->routeOutcome($scenario, $routes),
                 'package' => $this->triage->packageAdvised($answers, $found),
             ];
         };
@@ -125,37 +138,37 @@ describe('scenarios', function () {
     it('A (Sara): scan, two apps found, package advised', function () {
         $answers = safestartConfig()['scenarios']['A']['reference_answers'];
 
-        expect(($this->outcome)('A', $answers))->toBe(['routes' => ['scan'], 'matches' => true, 'package' => true])
+        expect(($this->outcome)('A', $answers))->toBe(['routes' => ['scan'], 'outcome' => 'exact', 'package' => true])
             ->and($this->scanner->resultFor('A')['apps'])->toHaveCount(2);
     });
 
     it('B (Lena): message route only, no scan, no package', function () {
         $answers = safestartConfig()['scenarios']['B']['reference_answers'];
 
-        expect(($this->outcome)('B', $answers))->toBe(['routes' => ['message'], 'matches' => true, 'package' => false]);
+        expect(($this->outcome)('B', $answers))->toBe(['routes' => ['message'], 'outcome' => 'exact', 'package' => false]);
     });
 
-    it('C (Tom) with q2 "don\'t know": shared plus a precautionary scan, no package', function () {
+    it('C (Tom) with q2 "don\'t know": shared plus a cautious scan (extra), no package', function () {
         $answers = safestartConfig()['scenarios']['C']['reference_answers'];
 
-        expect(($this->outcome)('C', $answers))->toBe(['routes' => ['scan', 'shared'], 'matches' => true, 'package' => false]);
+        expect(($this->outcome)('C', $answers))->toBe(['routes' => ['scan', 'shared'], 'outcome' => 'extra', 'package' => false]);
     });
 
     it('C (Tom) with q2 no: shared only, no package', function () {
         $answers = [...safestartConfig()['scenarios']['C']['reference_answers'], 'q2' => 'no'];
 
-        expect(($this->outcome)('C', $answers))->toBe(['routes' => ['shared'], 'matches' => true, 'package' => false]);
+        expect(($this->outcome)('C', $answers))->toBe(['routes' => ['shared'], 'outcome' => 'exact', 'package' => false]);
     });
 
     it('C (Tom) with q2 yes: package advised', function () {
         $answers = [...safestartConfig()['scenarios']['C']['reference_answers'], 'q2' => 'yes'];
 
-        expect(($this->outcome)('C', $answers))->toBe(['routes' => ['scan', 'shared'], 'matches' => true, 'package' => true]);
+        expect(($this->outcome)('C', $answers))->toBe(['routes' => ['scan', 'shared'], 'outcome' => 'extra', 'package' => true]);
     });
 
-    it('B (Lena) with q1 "don\'t know" adds a scan and no longer matches', function () {
+    it('B (Lena) with q1 "don\'t know" adds a scan: extra', function () {
         $answers = [...safestartConfig()['scenarios']['B']['reference_answers'], 'q1' => 'unknown'];
 
-        expect(($this->outcome)('B', $answers))->toBe(['routes' => ['scan', 'message'], 'matches' => false, 'package' => false]);
+        expect(($this->outcome)('B', $answers))->toBe(['routes' => ['scan', 'message'], 'outcome' => 'extra', 'package' => false]);
     });
 });

@@ -21,6 +21,14 @@ final class Triage
 
     public const NO_ROUTE = 'none';
 
+    public const OUTCOME_EXACT = 'exact';
+
+    public const OUTCOME_EXTRA = 'extra';
+
+    public const OUTCOME_MISSED = 'missed';
+
+    public const OUTCOMES = [self::OUTCOME_EXACT, self::OUTCOME_EXTRA, self::OUTCOME_MISSED];
+
     /**
      * @param  array  $config  the full config('safestart') array
      */
@@ -77,25 +85,24 @@ final class Triage
     }
 
     /**
-     * Whether the routes the participant reached are one of the accepted
-     * outcomes for this scenario. Order does not matter.
+     * Compares the routes the participant reached with the routes the
+     * scenario expects. Order does not matter.
+     *
+     * A missing expected route always counts as "missed", even when extra
+     * routes were reached too: missing something matters more than caution.
+     *
+     * @return string one of OUTCOME_EXACT, OUTCOME_EXTRA, OUTCOME_MISSED
      */
-    public function matchesScenario(string $scenario, array $routes): bool
+    public function routeOutcome(string $scenario, array $routes): string
     {
-        $accepted = $this->config['scenarios'][$scenario]['accepted_routes']
+        $expected = $this->config['scenarios'][$scenario]['expected_routes']
             ?? throw new InvalidArgumentException("Unknown scenario [{$scenario}].");
 
-        sort($routes);
-
-        foreach ($accepted as $set) {
-            sort($set);
-
-            if ($set === $routes) {
-                return true;
-            }
+        if (array_diff($expected, $routes) !== []) {
+            return self::OUTCOME_MISSED;
         }
 
-        return false;
+        return array_diff($routes, $expected) === [] ? self::OUTCOME_EXACT : self::OUTCOME_EXTRA;
     }
 
     /**

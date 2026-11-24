@@ -84,16 +84,21 @@ return [
     |
     | reference_answers: what a careful reader of the story would answer.
     |                    Only used by the tests, never shown to participants.
-    | accepted_routes:   route sets that count as "reached the right route".
-    |                    For C, q2 is unclear in the story on purpose: answering
-    |                    yes or "don't know" also triggers a scan, which is fine.
+    | expected_routes:   the routes the story calls for. The results compare
+    |                    what the participant reached with this:
+    |                      exact  = the same routes
+    |                      extra  = all expected routes plus more (for example
+    |                               a cautious scan after a "don't know")
+    |                      missed = at least one expected route is absent
+    |                    For C, q2 is unclear in the story on purpose: a yes or
+    |                    "don't know" adds a scan, which shows up as "extra".
     | scan_findings:     the scripted scan result. Empty means "nothing found".
     |                    App names are invented and must never be real products.
     */
     'scenarios' => [
         'A' => [
             'reference_answers' => ['q1' => 'yes', 'q2' => 'yes', 'q3' => 'no', 'q4' => 'no', 'q5' => 'no', 'q6' => 'yes'],
-            'accepted_routes' => [['scan']],
+            'expected_routes' => ['scan'],
             'scan_findings' => [
                 ['name' => 'Kalvo Sync', 'finding' => 'location'],
                 ['name' => 'Pernik System Service', 'finding' => 'messages'],
@@ -101,12 +106,12 @@ return [
         ],
         'B' => [
             'reference_answers' => ['q1' => 'no', 'q2' => 'no', 'q3' => 'yes', 'q4' => 'no', 'q5' => 'no', 'q6' => 'no'],
-            'accepted_routes' => [['message']],
+            'expected_routes' => ['message'],
             'scan_findings' => [],
         ],
         'C' => [
             'reference_answers' => ['q1' => 'yes', 'q2' => 'unknown', 'q3' => 'no', 'q4' => 'yes', 'q5' => 'yes', 'q6' => 'no'],
-            'accepted_routes' => [['shared'], ['scan', 'shared']],
+            'expected_routes' => ['shared'],
             'scan_findings' => [],
         ],
     ],
