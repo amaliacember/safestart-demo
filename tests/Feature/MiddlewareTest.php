@@ -81,7 +81,8 @@ describe('SecurityHeaders', function () {
             ->assertHeader('X-Content-Type-Options', 'nosniff')
             ->assertHeader('Referrer-Policy', 'no-referrer')
             ->assertHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()')
-            ->assertHeader('X-Robots-Tag', 'noindex, nofollow');
+            ->assertHeader('X-Robots-Tag', 'noindex, nofollow')
+            ->assertHeaderMissing('X-Powered-By');
     });
 });
 

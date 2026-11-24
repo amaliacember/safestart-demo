@@ -54,6 +54,10 @@ class SecurityHeaders
         // A demo link must never end up in a search engine.
         $response->headers->set('X-Robots-Tag', 'noindex, nofollow');
 
+        // PHP adds "X-Powered-By: PHP/8.x" by itself; no need to tell visitors.
+        $response->headers->remove('X-Powered-By');
+        header_remove('X-Powered-By');
+
         return $response;
     }
 }
