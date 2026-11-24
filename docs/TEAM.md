@@ -23,7 +23,7 @@ One demo, five modules, one person per module. Each person builds their module *
 7. **Same results.** Every module ends on the shared results screen (time per task, back clicks, outcome) with "Copy results". This is what makes our evidence comparable.
 8. **Tests.** At least one Livewire feature test that runs your module start to finish, and your screens in the Playwright run. `php artisan test` must be green before you open a pull request.
 
-Everything in `CLAUDE.md` (security, design, accessibility) applies to all modules. Claude Code reads it automatically.
+Everything in [`CONTRIBUTING.md`](../CONTRIBUTING.md) (module structure, security, design, accessibility) applies to all modules.
 
 ---
 
@@ -48,7 +48,7 @@ Shared files (only change after telling the group, Amalia merges these):
 - `app/Http/*` (middleware, download controller), `app/Providers/*`, `bootstrap/app.php`, `routes/web.php`
 - `config/safestart/demo.php`, `config/safestart/modules.php`, `lang/{nl,en}/demo.php`
 - `resources/views/layouts/*`, `resources/views/components/*`, `resources/views/livewire/*`, `resources/views/modules/intro.blade.php`
-- `resources/css/app.css`, `resources/js/app.js`, `e2e/helpers.ts`, `.github/*`, `CLAUDE.md`, `docs/TEAM.md`
+- `resources/css/app.css`, `resources/js/app.js`, `e2e/helpers.ts`, `.github/*`, `CONTRIBUTING.md`, `docs/TEAM.md`
 
 The start page lists the five modules. Each module also has its own direct link (`/m/<module>`) so an interviewer can send just their part.
 
@@ -68,7 +68,7 @@ The start page lists the five modules. Each module also has its own direct link 
    ```
 4. Open the site locally: with Herd at `http://<folder-name>.test`, otherwise run `php artisan serve` and open `http://127.0.0.1:8000`. You should see the start page and module 1 working.
 5. Make your branch: `git checkout -b module-<nr>-<name>` (e.g. `module-2-handover`).
-6. If you use Claude Code: open the folder in VS Code and start with *"Read CLAUDE.md and docs/TEAM.md. I own module <nr>. Propose a plan for my module only. Don't build yet."* If you code yourself, copy `app/Livewire/Modules/Template.php` and its files as a starting point.
+6. Read `CONTRIBUTING.md`. If you code yourself, copy `app/Livewire/Modules/Template.php` and its files as a starting point (see the README, "Making your module"). If you use an AI coding assistant, start with *"Read CONTRIBUTING.md and docs/TEAM.md. I own module <nr>. Propose a plan for my module only. Don't build yet."*
 
 ## Getting your module into the demo
 
@@ -123,17 +123,17 @@ A company IT or facility manager sees: (1) how donating used phones works (pick-
 
 **Wed 25 Nov: set up and plan on paper**
 - [ ] Check you can run Laravel locally (PHP 8.4+, Composer, Node 22). Accept the GitHub invite, clone the repo, follow "Getting started" until the start page works on your laptop.
-- [ ] Read `CLAUDE.md` and this file, at least the rules and your module brief.
+- [ ] Read `CONTRIBUTING.md` and this file, at least the rules and your module brief.
 - [ ] Write your **made-up case(s)** in 3–4 plain sentences: who, what happened, what the professional has to do. No real people or stories.
 - [ ] Sketch your **2–4 screens** on paper or in a note: what is on each screen, which button goes where. Mark which parts are timed as a "task" (for example "task 1 = choose what moves to the new phone").
-- [ ] Write **all the text** for your screens in Dutch and English (a shared doc is fine; Claude Code can put it in the `lang` files later).
+- [ ] Write **all the text** for your screens in Dutch and English (a shared doc is fine; you or your AI assistant can put it in the `lang` files later).
 - [ ] Write your **success line** for the test card: "We are right if at least … of … ".
 - [ ] Do the **research** listed for your module in Part B, so the content is correct.
 - [ ] Make a list of **4 possible interviewees** (you need 2; people cancel). Message them today with the template below, and plan a 20-minute call between Fri 27 and Mon 30 Nov.
 
 **Thu 26 Nov: build**
 - [ ] Create your branch `module-<nr>-<name>`.
-- [ ] Ask Claude Code for a plan for your module only (prompt in "Getting started"). Before saying go, check: only your own module files, no database, no forms that store or send data, all text in `lang`.
+- [ ] Plan your module only (if you use an AI assistant, the prompt is in "Getting started"). Before saying go, check: only your own module files, no database, no forms that store or send data, all text in `lang`.
 - [ ] Build in this order: config (your made-up data) and lang files first, then screens one by one, then the feature test, then add your module to the Playwright run.
 - [ ] Click through it yourself on your **phone and laptop**, in Dutch and English. Fix anything confusing.
 - [ ] Run `php artisan test`. Green means you can open a pull request.

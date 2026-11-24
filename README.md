@@ -24,7 +24,9 @@ results into the call chat (or downloads them) and closes the session.
 person. Nothing is stored for the team: the results live only in the
 participant's own session until they copy or download them and close it.
 
-The team plan, module briefs and rules are in [`docs/TEAM.md`](docs/TEAM.md).
+The team plan and module briefs are in [`docs/TEAM.md`](docs/TEAM.md). The rules for
+working on the code (module structure, shared files, security, design,
+accessibility) are in [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## Run it on your laptop
 
@@ -69,11 +71,12 @@ otherwise the site keeps asking the stopped dev server for its files.
 - Each person works on their own branch: `git checkout -b module-<nr>-<name>`
   (for example `module-2-handover`). Commit often.
 - Change only your own module files (list below). For a shared file, tell the
-  group first; Amalia merges those.
+  group first; Amalia merges those. The full list of shared files is in
+  `CONTRIBUTING.md`.
 - When your module works and `php artisan test` is green: push your branch and
   open a **pull request** to `main`. GitHub runs the tests on it automatically
   (the "tests" check). One other member clicks through it and checks the rules
-  in `docs/TEAM.md`, then it is merged.
+  in `CONTRIBUTING.md` and `docs/TEAM.md`, then it is merged.
 - After a merge, everyone updates: `git checkout main`, `git pull`, then
   `composer install`, `npm install`, `npm run build`.
 

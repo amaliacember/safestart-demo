@@ -29,3 +29,7 @@ Thumbs.db
 /playwright-report
 /blob-report
 /playwright/.cache
+
+# Local instructions for AI tools; the shared rules are in CONTRIBUTING.md
+/CLAUDE.md
+/AGENTS.md
