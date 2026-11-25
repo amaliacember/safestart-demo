@@ -32,3 +32,8 @@ Thumbs.db
 
 # Local file for Claude Code; it only contains @AGENTS.md
 /CLAUDE.md
+
+# graphify output: only the report and wiki are shared; cache, graph.json and local paths stay local
+/graphify-out/*
+!/graphify-out/GRAPH_REPORT.md
+!/graphify-out/wiki/

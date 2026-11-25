@@ -1,0 +1,26 @@
+# Scenario Screen
+
+> 2 nodes · cohesion 1.00
+
+## Key Concepts
+
+- **scenario.blade.php** (1 connections) — `resources/views/modules/caseworker/scenario.blade.php`
+- **startCase** (1 connections) — `resources/views/modules/caseworker/scenario.blade.php`
+
+## Relationships
+
+- No strong cross-community connections detected
+
+## Source Files
+
+- `resources/views/modules/caseworker/scenario.blade.php`
+
+## Audit Trail
+
+- EXTRACTED: 1 (100%)
+- INFERRED: 0 (0%)
+- AMBIGUOUS: 0 (0%)
+
+---
+
+*Part of the graphify knowledge wiki. See [index](index.md) to navigate.*
