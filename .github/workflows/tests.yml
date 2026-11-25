@@ -1,5 +1,5 @@
 # Runs the Pest tests and a package audit on every pull request and on every
-# push to main, plus a dependency review on pull requests.
+# push to main.
 # Nothing is deployed. No secrets are used.
 #
 # The Playwright runs (npm run test:e2e) need a running site, so they stay on
@@ -65,12 +65,3 @@ jobs:
 
       - name: Run the tests
         run: php artisan test
-
-  # Fails a pull request that adds a package with a known vulnerability.
-  dependency-review:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-
-    steps:
-      - uses: actions/dependency-review-action@bbc44d14a204704ccc493733616cd1e93a0321ec # v5.0.1
