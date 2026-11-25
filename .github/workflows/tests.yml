@@ -1,4 +1,5 @@
-# Runs the Pest tests on every pull request and on every push to main.
+# Runs the Pest tests and a package audit on every pull request and on every
+# push to main.
 # Nothing is deployed. No secrets are used.
 #
 # The Playwright runs (npm run test:e2e) need a running site, so they stay on
@@ -50,6 +51,12 @@ jobs:
         run: |
           npm ci
           npm run build
+
+      # Both must stay at 0 known vulnerabilities (see the README).
+      - name: Check packages for known vulnerabilities
+        run: |
+          composer audit
+          npm audit
 
       - name: Prepare .env
         run: |
